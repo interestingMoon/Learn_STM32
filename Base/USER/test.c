@@ -27,17 +27,17 @@ int main(void)
 	delay_init(180);			//初始化延时函数 
 	uart_init(90,115200);		//初始化串口波特率为115200
  	LED_Init();					//初始化与LED连接的硬件接口
-	SDRAM_Init();				//初始化SDRAM 
-	LCD_Init();					//初始化LCD
+	//SDRAM_Init();				//初始化SDRAM 
+	//LCD_Init();					//初始化LCD
  	KEY_Init(); 				//按键初始化	
  	MYDMA_Config(DMA2_Stream7,4,(u32)&USART1->DR,(u32)SendBuff,SEND_BUF_SIZE);//DMA2,STEAM7,CH4,外设为串口1,存储器为SendBuff,长度为:SEND_BUF_SIZE.
- 	POINT_COLOR=RED;
-	LCD_ShowString(30,50,200,16,16,"Apollo STM32F4/F7"); 
-	LCD_ShowString(30,70,200,16,16,"DMA TEST");	
-	LCD_ShowString(30,90,200,16,16,"ATOM@ALIENTEK");
-	LCD_ShowString(30,110,200,16,16,"2015/12/27");	 
-	LCD_ShowString(30,130,200,16,16,"KEY0:Start");	 
-	POINT_COLOR=BLUE;//设置字体为蓝色      	 
+ 	//POINT_COLOR=RED;
+	//LCD_ShowString(30,50,200,16,16,"Apollo STM32F4/F7"); 
+	//LCD_ShowString(30,70,200,16,16,"DMA TEST");	
+	//LCD_ShowString(30,90,200,16,16,"ATOM@ALIENTEK");
+	//LCD_ShowString(30,110,200,16,16,"2015/12/27");	 
+	//LCD_ShowString(30,130,200,16,16,"KEY0:Start");	 
+	//POINT_COLOR=BLUE;//设置字体为蓝色      	 
 //显示提示信息	
 	j=sizeof(TEXT_TO_SEND);	   
 	for(i=0;i<SEND_BUF_SIZE;i++)//填充ASCII字符集数据
@@ -68,13 +68,13 @@ int main(void)
 		if(t==KEY0_PRES)//KEY0按下
 		{
 			printf("\r\nDMA DATA:\r\n"); 	    
-			LCD_ShowString(30,150,200,16,16,"Start Transimit....");
-			LCD_ShowString(30,170,200,16,16,"   %");//显示百分号
+			//LCD_ShowString(30,150,200,16,16,"Start Transimit....");
+			//LCD_ShowString(30,170,200,16,16,"   %");//显示百分号
 		    USART1->CR3=1<<7;           //使能串口1的DMA发送       
 			MYDMA_Enable(DMA2_Stream7,SEND_BUF_SIZE);//开始一次DMA传输！	  
 		    //等待DMA传输完成，此时我们来做另外一些事，点灯
 		    //实际应用中，传输数据期间，可以执行另外的任务
-		    while(1)
+		    /*while(1)
 		    {
 				if(DMA2->HISR&(1<<27))	//等待DMA2_Steam7传输完成
 				{
@@ -88,6 +88,7 @@ int main(void)
 		    }			    
 			LCD_ShowNum(30,170,100,3,16);//显示100%	  
 			LCD_ShowString(30,150,200,16,16,"Transimit Finished!");//提示传送完成
+			*/
 		}
 		i++;
 		delay_ms(10);
