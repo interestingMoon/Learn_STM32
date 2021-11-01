@@ -21,8 +21,9 @@
 //chx:DMA通道选择,范围:0~7
 //par:外设地址
 //mar:存储器地址
-//ndtr:数据传输量  
-void MYDMA_Config(DMA_Stream_TypeDef *DMA_Streamx,u8 chx,u32 par,u32 mar,u16 ndtr)
+//ndtr:数据传输量
+//dir:数据方向，0：发送，1：接收  
+void MYDMA_Config(DMA_Stream_TypeDef *DMA_Streamx,u8 chx,u32 par,u32 mar,u16 ndtr,u8 dir)
 { 
 	DMA_TypeDef *DMAx;
 	u8 streamx;
@@ -46,8 +47,15 @@ void MYDMA_Config(DMA_Stream_TypeDef *DMA_Streamx,u8 chx,u32 par,u32 mar,u16 ndt
 	DMA_Streamx->M0AR=mar;		//DMA 存储器0地址
 	DMA_Streamx->NDTR=ndtr;		//DMA 存储器0地址
 	DMA_Streamx->CR=0;			//先全部复位CR寄存器值 
+	if(dir == 0)
+	{
+		//发送模式
+		DMA_Streamx->CR|=1<<6;		//存储器到外设模式
+	}else{
+		//接收模式
+		DMA_Streamx->CR|=0<<6;		//外设到存储器模式
+	}
 	
-	DMA_Streamx->CR|=1<<6;		//存储器到外设模式
 	DMA_Streamx->CR|=0<<8;		//非循环模式(即使用普通模式)
 	DMA_Streamx->CR|=0<<9;		//外设非增量模式
 	DMA_Streamx->CR|=1<<10;		//存储器增量模式
@@ -58,7 +66,7 @@ void MYDMA_Config(DMA_Stream_TypeDef *DMA_Streamx,u8 chx,u32 par,u32 mar,u16 ndt
 	DMA_Streamx->CR|=0<<23;		//存储器突发单次传输
 	DMA_Streamx->CR|=(u32)chx<<25;//通道选择
 	//DMA_Streamx->FCR=0X21;	//FIFO控制寄存器
-} 
+}
 //开启一次DMA传输
 //DMA_Streamx:DMA数据流,DMA1_Stream0~7/DMA2_Stream0~7 
 //ndtr:数据传输量  
@@ -66,7 +74,7 @@ void MYDMA_Enable(DMA_Stream_TypeDef *DMA_Streamx,u16 ndtr)
 {
 	DMA_Streamx->CR&=~(1<<0); 	//关闭DMA传输 
 	while(DMA_Streamx->CR&0X1);	//确保DMA可以被设置  
-	DMA_Streamx->NDTR=ndtr;		//DMA 存储器0地址 
+	DMA_Streamx->NDTR=ndtr;		//DMA传输长度 
 	DMA_Streamx->CR|=1<<0;		//开启DMA传输
 }	  
 
